@@ -14,11 +14,11 @@ export class ProjectConfig extends SeedConfig {
   constructor() {
     super();
 
-    this.ROLLUP_CONFIG.BUNDLE.globals['lodash'] = 'lodash';
+    this.ROLLUP_CONFIG.BUNDLE.globals['lodash']          = 'lodash';
     this.ROLLUP_CONFIG.BUNDLE.globals['@reactivex/rxjs'] = '@reactivex/rxjs';
-    this.ROLLUP_CONFIG.BUNDLE.globals['leanengine'] = 'AV';
-    this.ROLLUP_CONFIG.BUNDLE.globals['jsesc'] = 'jsesc';
-    this.ROLLUP_CONFIG.ROLLUP['external'] = ['@reactivex/rxjs', 'lodash', 'tslib', 'jsesc', 'leanengine'];
+    this.ROLLUP_CONFIG.BUNDLE.globals['leanengine']      = 'AV';
+    this.ROLLUP_CONFIG.BUNDLE.globals['jsesc']           = 'jsesc';
+    this.ROLLUP_CONFIG.ROLLUP['external']                = ['@reactivex/rxjs', 'lodash', 'tslib', 'jsesc', 'leanengine'];
 
     /**
      * Change to your custom project info here.
@@ -26,10 +26,29 @@ export class ProjectConfig extends SeedConfig {
      * Used in gulp tasks `reset.pkgjson` and `init.pkgjson.
      */
     this.PACKAGE_JSON = _.merge(this.PACKAGE_JSON, {
-      name: 'sails-leancloud',
-      repository: 'https://github.com/Jimmysh/sails-leancloud.git',
-      scripts : {
+      name              : 'sails-leancloud',
+      repository        : 'https://github.com/Jimmysh/sails-leancloud.git',
+      "author"          : "Jimmy Liu <hero63418@gmail.com>",
+      scripts           : {
         test: 'gulp test'
+      },
+      dependencies      : {
+        "jsesc"     : "^2.4.0",
+        "leanengine": "^1.2.3",
+        "lodash"    : "^4.17.2"
+      },
+      "devDependencies" : {
+        "waterline-adapter-tests": "^1.0.0-3"
+      },
+      "waterlineAdapter": {
+        "waterlineVersion": "^0.13.0",
+        "interfaces"      : [
+          "semantic",
+          "queryable"
+        ],
+        "features"        : [
+          "cross-adapter"
+        ]
       }
     });
 
@@ -43,9 +62,9 @@ export class ProjectConfig extends SeedConfig {
 
     // To add downloaded documentation
     this.DOWNLOAD_DOCS.push({
-      file: 'rxjs/introrx.md',
-      url: 'https://gist.githubusercontent.com/staltz/868e7e9bc2a7b8c1f754/raw/35cc1edb69b7175fd1308800a244410890bc9b5f/introrx.md'
-    });
+                              file: 'rxjs/introrx.md',
+                              url : 'https://gist.githubusercontent.com/staltz/868e7e9bc2a7b8c1f754/raw/35cc1edb69b7175fd1308800a244410890bc9b5f/introrx.md'
+                            });
 
     /* Add to or override NPM module configurations: */
     // this.mergeObject(this.PLUGIN_CONFIGS['browser-sync'], { ghostMode: false });

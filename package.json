@@ -48,6 +48,9 @@
   "author": "Jimmy Liu <hero63418@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@reactivex/rxjs": "^5.0.3",
+    "rxjs": "^5.0.3",
+    "tslib": "^1.4.0",
     "jsesc": "^2.4.0",
     "leanengine": "^1.2.3",
     "lodash": "^4.17.2"
@@ -55,7 +58,6 @@
   "devDependencies": {
     "@angular/compiler": "^2.4.1",
     "@angular/core": "^2.4.1",
-    "@reactivex/rxjs": "^5.0.3",
     "@types/async": "^2.0.37",
     "@types/browser-sync": "^0.0.34",
     "@types/chalk": "^0.4.31",
@@ -99,24 +101,22 @@
     "isstream": "^0.1.2",
     "jasmine": "^2.5.2",
     "jasmine-spec-reporter": "^2.7.0",
+    "lodash": "^4.17.2",
     "merge2": "^1.0.2",
-    "mocha": "3.0.2",
     "open": "^0.0.5",
     "remap-istanbul": "^0.8.4",
     "rmfr": "^1.0.1",
     "rollup": "^0.38.0",
     "run-sequence": "^1.2.2",
-    "rxjs": "^5.0.3",
     "semver": "^5.3.0",
     "serve-static": "^1.11.1",
     "tildify": "^1.2.0",
     "ts-node": "^1.7.2",
-    "tslib": "^1.4.0",
     "tslint": "4.0.0",
     "typescript": "^2.1.4",
-    "waterline-adapter-tests": "^1.0.0-3",
     "yargs": "^6.6.0",
-    "zone.js": "^0.7.4"
+    "zone.js": "^0.7.4",
+    "waterline-adapter-tests": "^1.0.0-3"
   },
   "optionalDependencies": {},
   "config": {
