@@ -1,9 +1,9 @@
 import * as _ from 'lodash';
-const jsesc: any = require('jsesc');
+import { jsesc } from 'jsesc';
 
 export function jsescAll(value) {
   return jsesc(value, {
-    'escapeEverything': true
+    escapeEverything: true
   });
 }
 export function format2(value) {

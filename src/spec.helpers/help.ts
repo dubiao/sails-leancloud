@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import { getFunctionParamNames } from './getFunctionParamNames';
+
 function getSpace(num: number) {
   let str = ' ---';
   while (num--) str += '-';
@@ -29,7 +30,9 @@ export function consoleFunctionArguments(fun: any) {
             let msg = '';
             try {
               msg = JSON.stringify(v);
-            } catch (e) {}
+            } catch (e) {
+              console.log(e);
+            }
             let isFirst = true;
             while (msg.length > 0) {
               if (isFirst) {

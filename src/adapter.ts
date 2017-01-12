@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
+import * as AV from 'leanengine';
 import { formatCreateData, formatBackData } from './util/formatData';
 import { leancloudQuerybuilder } from './query-builder/index';
-const AV = require('leanengine');
 
 export interface WQuery {
   method: string;
@@ -114,8 +114,8 @@ export class WaterlineLeancloud {
    * @param  {Function}     cb            Callback
    */
   find(datastoreName: string, query: WQuery, cb: WCallback) {
-    const scheme         = this.getScheme(datastoreName, query);
-    const leancloudQuery = leancloudQuerybuilder(query, scheme);
+    const scheme              = this.getScheme(datastoreName, query);
+    const leancloudQuery: any = leancloudQuerybuilder(query, scheme);
     leancloudQuery.find()
                   .then(data => cb(undefined, formatBackData(data, scheme)),
                         error => backError(error, cb));
@@ -128,10 +128,10 @@ export class WaterlineLeancloud {
    * @param  {Function}     cb            Callback
    */
   update = (datastoreName: string, query: WQuery, cb: WCallback) => {
-    const scheme         = this.getScheme(datastoreName, query);
-    const leancloudQuery = leancloudQuerybuilder(query, scheme);
+    const scheme              = this.getScheme(datastoreName, query);
+    const leancloudQuery: any = leancloudQuerybuilder(query, scheme);
     leancloudQuery.find()
-                  .then(data => data.map(d => d.set(query.valuesToSet)))
+                  .then(data => _.map(data, (d: any) => d.set(query.valuesToSet)))
                   .then(data => AV.Object.saveAll(data))
                   .then(data => backData(query, data, scheme, cb),
                         error => backError(error, cb));
@@ -144,13 +144,13 @@ export class WaterlineLeancloud {
    * @param  {Function}     cb            Callback
    */
   destroy = (datastoreName: string, query: WQuery, cb: WCallback) => {
-    const scheme         = this.getScheme(datastoreName, query);
-    const leancloudQuery = leancloudQuerybuilder(query, scheme);
+    const scheme              = this.getScheme(datastoreName, query);
+    const leancloudQuery: any = leancloudQuerybuilder(query, scheme);
     leancloudQuery.find()
                   .then(data => data.length > 0 ? AV.Object.destroyAll(data) : [])
                   .then(data => backData(query, data, scheme, cb),
                         error => backError(error, cb));
-  }
+  };
 
   /**
    * 返回数量
@@ -159,8 +159,8 @@ export class WaterlineLeancloud {
    * @param  {Function}     cb            Callback
    */
   count = (datastoreName: string, query: WQuery, cb: WCallback) => {
-    const scheme         = this.getScheme(datastoreName, query);
-    const leancloudQuery = leancloudQuerybuilder(query, scheme);
+    const scheme              = this.getScheme(datastoreName, query);
+    const leancloudQuery: any = leancloudQuerybuilder(query, scheme);
     leancloudQuery.count()
                   .then(data => cb(undefined, data),
                         error => backError(error, cb));
@@ -253,4 +253,3 @@ export class WaterlineLeancloud {
     }
   }
 }
-

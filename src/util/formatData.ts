@@ -35,15 +35,17 @@ function toJSON(data: any) {
 }
 
 export const formatBackData = (data: any, scheme: any = undefined) => {
-  if (_.isArray(data))
+  if (_.isArray(data)) {
     return _.map(data, d => formatOutput(toJSON(d)));
-  else
+  } else {
     return formatOutput(toJSON(data));
+  }
 };
 
 export const formatCreateData = (data: any, scheme: any = undefined) => {
-  if (_.isArray(data))
+  if (_.isArray(data)) {
     return _.map(data, d => formatInput(d));
-  else
+  } else {
     return formatInput(data);
+  }
 };

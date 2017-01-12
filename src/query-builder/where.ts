@@ -1,6 +1,6 @@
 import { getRegExp } from './util';
 import * as _ from 'lodash';
-const AV = require('leanengine');
+import * as AV from 'leanengine';
 
 export function where(query: any, where: any, schema: any = {}) {
   return matchSet(query, where, undefined, schema);

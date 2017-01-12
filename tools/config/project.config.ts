@@ -16,7 +16,9 @@ export class ProjectConfig extends SeedConfig {
 
     this.ROLLUP_CONFIG.BUNDLE.globals['lodash'] = 'lodash';
     this.ROLLUP_CONFIG.BUNDLE.globals['@reactivex/rxjs'] = '@reactivex/rxjs';
-    this.ROLLUP_CONFIG.ROLLUP['external'] = ['@reactivex/rxjs', 'lodash', 'tslib'];
+    this.ROLLUP_CONFIG.BUNDLE.globals['leanengine'] = 'AV';
+    this.ROLLUP_CONFIG.BUNDLE.globals['jsesc'] = 'jsesc';
+    this.ROLLUP_CONFIG.ROLLUP['external'] = ['@reactivex/rxjs', 'lodash', 'tslib', 'jsesc', 'leanengine'];
 
     /**
      * Change to your custom project info here.

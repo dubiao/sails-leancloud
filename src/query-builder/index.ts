@@ -5,7 +5,7 @@ import { skip } from './skip';
 import { sort } from './sort';
 import { select } from './select';
 import { joins } from './joins';
-const AV: any = require('leanengine');
+import * as AV from 'leanengine';
 
 export function leancloudQuerybuilder(query: WQuery, scheme: any) {
   let leancloudQuery = new AV.Query(query.using);
