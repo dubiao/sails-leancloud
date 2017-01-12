@@ -113,13 +113,13 @@ export class WaterlineLeancloud {
    * @param  {Dictionary}   query         The stage-3 query to perform.
    * @param  {Function}     cb            Callback
    */
-  find(datastoreName: string, query: WQuery, cb: WCallback) {
+  find = (datastoreName: string, query: WQuery, cb: WCallback) => {
     const scheme              = this.getScheme(datastoreName, query);
     const leancloudQuery: any = leancloudQuerybuilder(query, scheme);
     leancloudQuery.find()
                   .then(data => cb(undefined, formatBackData(data, scheme)),
                         error => backError(error, cb));
-  }
+  };
 
   /**
    * 更新一个或是多个记录

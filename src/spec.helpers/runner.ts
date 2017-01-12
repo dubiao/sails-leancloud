@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { inspect } from 'util';
 import { WaterlineLeancloud } from '../adapter';
 import { consoleFunctionArguments } from './help';
@@ -9,6 +10,23 @@ let _package: any;
 let interfaces: any;
 let features: any;
 
+// 进程中的 key 方便 ci
+const key1 = {
+  appId    : process.env.LEANCLOUD_APP_ID,
+  appKey   : process.env.LEANCLOUD_APP_KEY,
+  masterKey: process.env.LEANCLOUD_APP_MASTER_KEY
+};
+
+// 本地 key 方便测试
+let key2: any;
+try {
+  key2 = require('./leancloudKey');
+} catch (e) {
+  key2 = {}
+}
+const config = {};
+
+console.log(config, key2, key1);
 try {
   _package   = require('../../package.json');
   interfaces = _package.waterlineAdapter.interfaces;
@@ -42,11 +60,7 @@ new TestRunner({
   adapter: Adapter,
 
   // Default connection config to use.
-  config: {
-    appId    : process.env.LEANCLOUD_APP_ID,
-    appKey   : process.env.LEANCLOUD_APP_KEY,
-    masterKey: process.env.LEANCLOUD_APP_MASTER_KEY
-  },
+  config: _.assign(config, key1, key2),
 
   // The set of adapter interfaces to test against.
   // (grabbed these from this adapter's package.json file above)
