@@ -1,0 +1,200 @@
+{
+  "build": [
+    "qa",
+    "clean.build",
+    "build.es6",
+    "build.cjs",
+    "rollup.umd",
+    "rollup.umd.mocks",
+    "rollup.umd.uglify",
+    "rollup.umd.uglify.mocks"
+  ],
+
+  "qa": [
+    "lint.src",
+    "test.src"
+  ],
+
+  "qa.cover": [
+    "lint.src",
+    "test.coverage.src"
+  ],
+
+  "qa.samples": [
+    "lint.samples",
+    "test.samples"
+  ],
+
+  "qa.cover.samples": [
+    "lint.samples",
+    "test.coverage.samples"
+  ],
+
+  "qa.env": [
+    "lint.env"
+  ],
+
+  "lint": [
+    "lint.src"
+  ],
+
+  "watch": [
+    "watch.src"
+  ],
+
+  "watch.src": [
+    "clean.test.cjs.src",
+    "jasmine.src",
+    "watch.src.dir"
+  ],
+
+  "test": [
+    "test.src"
+  ],
+
+  "test.src": [
+    "clean.test.cjs.src",
+    "jasmine.src"
+  ],
+
+  "cover": [
+    "coverage.src"
+  ],
+
+  "coverage.src": [
+    "clean.coverage.src",
+    "clean.test.cjs.src",
+    "build.test.cjs.src",
+    "instrument.src",
+    "cover.src"
+  ],
+
+  "watch.samples": [
+    "clean.test.cjs.samples",
+    "jasmine.samples",
+    "watch.samples.dir"
+  ],
+
+  "test.samples": [
+    "clean.test.cjs.samples",
+    "jasmine.samples"
+  ],
+
+  "cover.samples": [
+    "coverage.samples"
+  ],
+
+  "coverage.samples": [
+    "clean.coverage.samples",
+    "clean.test.cjs.samples",
+    "build.test.cjs.samples",
+    "instrument.samples",
+    "cover.samples.dir"
+  ],
+
+  "release": [
+    "bump",
+    "_release"
+  ],
+
+  "release.build": [
+    "bump.build",
+    "_release"
+  ],
+
+  "release.alpha": [
+    "bump.alpha",
+    "_release"
+  ],
+
+  "release.beta": [
+    "bump.beta",
+    "_release"
+  ],
+
+  "release.rc": [
+    "bump.rc",
+    "_release"
+  ],
+
+  "release.patch": [
+    "bump.patch",
+    "_release"
+  ],
+
+  "release.minor": [
+    "bump.minor",
+    "_release"
+  ],
+
+  "release.major": [
+    "bump.major",
+    "_release"
+  ],
+
+  "_release": [
+    "git.add.commit.bump",
+    "git.push.changes",
+    "create.new.tag",
+    "github.release",
+    "regenerate.changelog",
+    "git.add.commit.bump",
+    "git.push.changes",
+    "_post.release",
+    "report.success.error"
+  ],
+
+  "_post.release": [
+
+  ],
+
+  "init.project.noHistory": [
+    "init.pkgjson",
+    "remove.git.dir",
+    "git.init",
+    "git.add.remote.origin",
+    "git.add.commit",
+    "git.push.changes.force",
+    "copy.githooks",
+    "_post.release",
+    "report.success.error"
+  ],
+
+  "init.project.keepHistory": [
+    "init.pkgjson",
+    "git.setUrl.origin",
+    "git.add.remote.upstream",
+    "git.create.branch.upstream",
+    "git.delete.all.tags",
+    "git.add.commit",
+    "regenerate.changelog",
+    "git.add.commit",
+    "create.new.tag",
+    "git.push.changes",
+    "copy.githooks",
+    "_post.release",
+    "report.success.error"
+  ],
+
+  "init.readme": [
+    "archive.readme",
+    "init.npm.readme"
+  ],
+
+  "pull.upstream.seed": [
+    "git.checkout.branch.upstream",
+    "git.pull.upstream.master",
+    "git.checkout.develop"
+  ],
+
+  "update.from.sibling": [
+    "save.pkgjson.props",
+    "seed.sibling.exists",
+    "seed.sibling.checkout.master",
+    "seed.sibling.pull.master",
+    "seed.sibling.copy",
+    "update.seed.readme",
+    "reset.pkgjson"
+  ]
+}
+
