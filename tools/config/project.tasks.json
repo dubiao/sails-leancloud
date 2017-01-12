@@ -2,7 +2,15 @@
   "test": [
     "test.src"
   ],
-
+  "build": [
+    "clean.build",
+    "build.es6",
+    "build.cjs",
+    "rollup.umd",
+    "rollup.umd.mocks",
+    "rollup.umd.uglify",
+    "rollup.umd.uglify.mocks"
+  ],
   "_post.release": [
     "npm.publish.public"
   ]
