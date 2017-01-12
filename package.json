@@ -1,7 +1,7 @@
 {
-  "name": "@uiuxengineering/node-typescript-seed",
-  "version": "1.0.5",
-  "description": "Node Typescript seed.",
+  "name": "sails-leancloud",
+  "version": "0.0.0",
+  "description": "leancloud adapter for sails waterline.",
   "main": "index.ts",
   "scripts": {
     "build": "gulp build",
@@ -44,8 +44,8 @@
     "watch": "gulp watch",
     "watch.samples": "gulp watch.samples"
   },
-  "repository": "https://github.com/UIUXEngineering/node-typescript-seed.git",
-  "author": "Jerry Orta <jerryorta.dev@gmail.com>",
+  "repository": "https://github.com/Jimmysh/sails-leancloud.git",
+  "author": "Jimmy Liu <hero63418@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "@reactivex/rxjs": "^5.0.3",

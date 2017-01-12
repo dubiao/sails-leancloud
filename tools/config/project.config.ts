@@ -24,8 +24,8 @@ export class ProjectConfig extends SeedConfig {
      * Used in gulp tasks `reset.pkgjson` and `init.pkgjson.
      */
     this.PACKAGE_JSON = _.merge(this.PACKAGE_JSON, {
-      name: '@uiuxengineering/node-typescript-seed',
-      repository: 'https://github.com/UIUXEngineering/node-typescript-seed.git',
+      name: 'sails-leancloud',
+      repository: 'https://github.com/Jimmysh/sails-leancloud.git',
       scripts : {
         test: 'gulp test'
       }
