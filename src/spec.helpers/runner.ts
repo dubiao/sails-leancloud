@@ -26,7 +26,6 @@ try {
 }
 const config = {};
 
-console.log(config, key2, key1);
 try {
   _package   = require('../../package.json');
   interfaces = _package.waterlineAdapter.interfaces;
