@@ -33,6 +33,16 @@ function backError(error, cb) {
   return cb(error);
 }
 
+function backFindError(error, cb) {
+  if (error) {
+    // leancloud 不能通过代码预先创建表，所以当返回101，当做表是空，当程序写数据的时候会自动创建表
+    if (error.code === 101) {
+      return cb(undefined, [])
+    }
+  }
+  return cb(error);
+}
+
 export class WaterlineLeancloud {
   // Sails app 里用的
   public identity: string = 'waterline-leancloud';
@@ -118,7 +128,7 @@ export class WaterlineLeancloud {
     const leancloudQuery: any = leancloudQuerybuilder(query, scheme);
     leancloudQuery.find()
                   .then(data => cb(undefined, formatBackData(data, scheme)),
-                        error => backError(error, cb));
+                        error => backFindError(error, cb));
   };
 
   /**

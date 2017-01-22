@@ -110,6 +110,10 @@ function validSubAttrCriteria(c) {
 }
 
 function matchLiteral(query, key, criterion, matchAction, schema) {
+
+  if (key === 'id')
+    key = 'objectId';
+
   //格式化时间
   if (schema && schema[key] && schema[key].type) {
     let schemaType = schema[key].type;
