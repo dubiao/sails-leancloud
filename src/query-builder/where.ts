@@ -7,9 +7,9 @@ export function where(query: any, where: any, schema: any = {}) {
 }
 
 function matchSet(query, criteria, parentKey, schema) {
-  if (!criteria || _.isEqual(criteria, {})) return query;
-
+  if (!criteria || _.isEmpty(criteria)) return query;
   _.forEach(criteria, function (criterion, key) {
+    console.log('key, criterion, parentKey', key, criterion, parentKey);
     query = matchItem(query, key, criterion, parentKey, schema);
   });
   return query;
@@ -51,17 +51,17 @@ function matchNot(model, criteria, schema) {
 
 function matchItem(model, key, criterion, parentKey, schema) {
   if (parentKey) {
-    if (key === 'equals' || key === '=' || key === 'equal') {
+    if (key === '=' || key === 'in') {
       return matchLiteral(model, parentKey, criterion, '=', schema);
-    } else if (key === 'not' || key === '!') {
+    } else if (key === '!=' || key === 'nin') {
       return matchLiteral(model, parentKey, criterion, '!', schema);
-    } else if (key === 'greaterThan' || key === '>') {
+    } else if (key === '>') {
       return matchLiteral(model, parentKey, criterion, '>', schema);
-    } else if (key === 'greaterThanOrEqual' || key === '>=') {
+    } else if (key === '>=') {
       return matchLiteral(model, parentKey, criterion, '>=', schema);
-    } else if (key === 'lessThan' || key === '<') {
+    } else if (key === '<') {
       return matchLiteral(model, parentKey, criterion, '<', schema);
-    } else if (key === 'lessThanOrEqual' || key === '<=') {
+    } else if (key === '<=') {
       return matchLiteral(model, parentKey, criterion, '<=', schema);
     } else if (key === 'startsWith') {
       return matchLiteral(model, parentKey, criterion, key, schema);
@@ -91,13 +91,10 @@ function matchItem(model, key, criterion, parentKey, schema) {
   }
 }
 
-
 function validSubAttrCriteria(c) {
   if (!_.isObject(c)) return false;
   let valid           = false;
-  let validAttributes = [
-    'equals', 'not', 'greaterThan', 'lessThan', 'greaterThanOrEqual', 'lessThanOrEqual',
-    '<', '<=', '!', '>', '>=', 'startsWith', 'endsWith', 'contains', 'like'];
+  let validAttributes = ['<', '<=', '!=', '>', '>=', 'startsWith', 'endsWith', 'contains', 'like', 'in', 'nin'];
   _.find(validAttributes, function (attr) {
     if (_.has(c, attr)) {
       valid = true;

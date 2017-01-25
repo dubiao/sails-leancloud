@@ -24,7 +24,7 @@ export interface WCallback {
   (error?, data?): void;
 }
 function backData(query, data, scheme, cb) {
-  if (query.meta && (query.meta.fetch === true || query.meta.fetch === undefined)) {
+  if (query.meta && query.meta.fetch === true) {
     return cb(undefined, formatBackData(data, scheme));
   }
   return cb();
