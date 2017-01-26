@@ -4,7 +4,7 @@ import { IConifg } from './interface/config';
 import { WaterlineModes } from './interface/waterline-models';
 import { LeancloudDB } from './connection/leancloud-db';
 import { WaterlineQuery } from './interface/waterline-query';
-import { formatBackData, formatCreateData } from './util/formatData';
+import { formatBackData, formatCreateData } from './util/format-data';
 import * as AV from 'leanengine';
 import { leancloudQuerybuilder } from './query-builder/index';
 
@@ -58,8 +58,6 @@ export namespace sailsLeancloud {
    * @param  {Function}     cb               Callback.
    */
   export function registerDatastore(datastoreConfig: IConifg, models: WaterlineModes, cb: WaterlineCallback) {
-
-    console.log('===registerDatastore');
 
     const identity = datastoreConfig.identity;
     if (!identity) {

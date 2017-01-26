@@ -8,7 +8,7 @@ import { skip } from '../query-builder/skip';
 import { sort } from '../query-builder/sort';
 import { select } from '../query-builder/select';
 import { joins } from '../query-builder/joins';
-import { formatBackData } from '../util/formatData';
+import { formatBackData } from '../util/format-data';
 
 export class LeancloudDB {
   constructor(config: IConifg) {
