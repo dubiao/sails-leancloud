@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
 import { inspect } from 'util';
-import { WaterlineLeancloud } from '../adapter';
 import { consoleFunctionArguments } from './help';
-const TestRunner   = require('waterline-adapter-tests');
-const Adapter: any = new WaterlineLeancloud();
-consoleFunctionArguments(Adapter);
+import { sailsLeancloud } from '../adapter';
+
+const TestRunner = require('waterline-adapter-tests');
+consoleFunctionArguments(sailsLeancloud);
 
 let _package: any;
 let interfaces: any;
@@ -20,7 +20,8 @@ const key1 = {
 // 本地 key 方便测试
 let key2: any;
 try {
-  key2 = require('./leancloudKey');
+  key2 = require('./leancloudKey').default;
+  console.log('key2', key2);
 } catch (e) {
   key2 = {}
 }
@@ -56,7 +57,7 @@ new TestRunner({
   },
 
   // Load the adapter module.
-  adapter: Adapter,
+  adapter: sailsLeancloud,
 
   // Default connection config to use.
   config: _.assign(config, key1, key2),

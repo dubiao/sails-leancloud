@@ -1,4 +1,3 @@
-import { WQuery } from '../adapter';
 import { where } from './where';
 import { limit } from './limit';
 import { skip } from './skip';
@@ -6,8 +5,9 @@ import { sort } from './sort';
 import { select } from './select';
 import { joins } from './joins';
 import * as AV from 'leanengine';
+import { WaterlineQuery } from '../interface/waterline-query';
 
-export function leancloudQuerybuilder(query: WQuery, scheme: any) {
+export function leancloudQuerybuilder(query: WaterlineQuery, scheme: any) {
   let leancloudQuery = new AV.Query(query.using);
   leancloudQuery     = where(leancloudQuery, query.criteria.where, scheme);
   leancloudQuery     = limit(leancloudQuery, query.criteria.limit);

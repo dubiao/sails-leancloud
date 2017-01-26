@@ -8,44 +8,22 @@ function getSpace(num: number) {
 }
 
 export function consoleFunctionArguments(fun: any) {
-  let length = 150;
+  let length = 50;
   _.forIn(fun, function (val, key: string) {
-    if (_.isFunction(val) && !key.includes('getScheme')) {
+    if (_.isFunction(val)) {
       const name = getFunctionParamNames(val);
       fun[key]   = function (_null, query) {
         const param = _.zipObject(name, arguments);
         val.apply(fun, arguments);
-
-        console.log(`[ ${key} ] ${getSpace(length + 20 - key.length)} [ ${new Date().toLocaleString()} ]`);
-        let maxLen = 0;
-        _.forEachRight(param, (v: any, k: string) => {
-          if (k.length > maxLen) {
-            maxLen = k.length;
-          }
-        });
-
-        let len = 1;
+        console.log(`\n\n\n`);
         _.forEach(param, (v, k) => {
           if (k !== 'cb') {
-            let msg = '';
-            try {
-              msg = JSON.stringify(v);
-            } catch (e) {
-              console.log(e);
-            }
-            let isFirst = true;
-            while (msg.length > 0) {
-              if (isFirst) {
-                console.log(`   ${len++} ${getSpace(maxLen - k.length)} ${k} = ${msg.slice(0, length)}`);
-              } else {
-                console.log(`   ${len++} ${getSpace(maxLen)}---- ${msg.slice(0, length)}`);
-              }
-              isFirst = false;
-              msg     = msg.slice(length);
-            }
+            console.log(`[ ${key} ] ${getSpace(length + 20 - key.length)} [${k}]`);
+            console.dir(v, { depth: null });
+            console.log('\n');
           }
         });
-        console.log('\n');
+        console.log('\n\n\n');
       };
     }
   });
