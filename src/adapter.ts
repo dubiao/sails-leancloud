@@ -1,52 +1,22 @@
 import * as _ from 'lodash';
 import { WaterlineCallback } from './interface/waterline-callback';
-import { IConifg } from './interface/config';
+import { IConfig } from './interface/config';
 import { WaterlineModes } from './interface/waterline-models';
 import { LeancloudDB } from './connection/leancloud-db';
 import { WaterlineQuery } from './interface/waterline-query';
-import { formatBackData, formatCreateData } from './util/format-data';
-import * as AV from 'leanengine';
-import { leancloudQuerybuilder } from './query-builder/index';
-
-function backData(query, data, scheme, cb) {
-  if (query.meta && query.meta.fetch === true) {
-    return cb(undefined, formatBackData(data, scheme, query));
-  }
-  return cb();
-}
-function backError(error, cb) {
-  if (error) {
-    if (error.code === 101) {
-      // leancloud 不能通过代码预先创建表，所以当返回101，当做表是空，当程序写数据的时候会自动创建表
-      return cb(undefined, [])
-    } else if (error.code === 137) {
-      // waterline 需要 code 为 'E_UNIQUE'
-      error.code = 'E_UNIQUE';
-      return cb(error);
-    }
-  }
-  return cb(error);
-}
+import { Datastores } from './interface/datastores';
 
 export namespace sailsLeancloud {
   //
   let modelDefinitions = {};
 
-  //
+  //TODO: 等 waterline test 更新
   export const identity: string          = 'sails-mongo';
   export const adapterApiVersion: number = 1;
 
   export const defaults = { schema: false };
 
-  export let datastores = {};
-
-  function getSchema(datastoreName, query) {
-    try {
-      return modelDefinitions[datastoreName][query.using];
-    } catch (e) {
-      return {};
-    }
-  }
+  export let datastores: Datastores = {};
 
   /**
    * 注册一个适配器连接
@@ -57,7 +27,7 @@ export namespace sailsLeancloud {
    * @param  {Dictionary}   models           数据模型.
    * @param  {Function}     cb               Callback.
    */
-  export function registerDatastore(datastoreConfig: IConifg, models: WaterlineModes, cb: WaterlineCallback) {
+  export function registerDatastore(datastoreConfig: IConfig, models: WaterlineModes, cb: WaterlineCallback) {
 
     const identity = datastoreConfig.identity;
     if (!identity) {
@@ -70,8 +40,6 @@ export namespace sailsLeancloud {
       appKey   : process.env.LEANCLOUD_APP_KEY,
       masterKey: process.env.LEANCLOUD_APP_MASTER_KEY
     });
-
-    console.log('identity', identity);
 
     datastores[identity] = {
       config: datastoreConfig,
@@ -90,9 +58,6 @@ export namespace sailsLeancloud {
    * @param  {Function}     cb            Callback
    */
   export function create(datastoreName: string, query: WaterlineQuery, cb: WaterlineCallback) {
-
-    console.log('d', datastoreName);
-    console.log(datastores[datastoreName].db.create);
     datastores[datastoreName].db.create(datastoreName, query, cb);
   }
 
@@ -103,10 +68,7 @@ export namespace sailsLeancloud {
    * @param  {Function}     cb            Callback
    */
   export function createEach(datastoreName: string, query: WaterlineQuery, cb: WaterlineCallback) {
-    const scheme    = getSchema(datastoreName, query);
-    const allObject = _.map(query.newRecords, record => new AV.Object(query.using, formatCreateData(record, scheme)));
-    AV.Object.saveAll(allObject).then(data => backData(query, data, scheme, cb),
-                                      error => backError(error, cb));
+    datastores[datastoreName].db.createEach(datastoreName, query, cb);
   }
 
   /**
@@ -116,11 +78,7 @@ export namespace sailsLeancloud {
    * @param  {Function}     cb            Callback
    */
   export function find(datastoreName: string, query: WaterlineQuery, cb: WaterlineCallback) {
-    const scheme              = getSchema(datastoreName, query);
-    const leancloudQuery: any = leancloudQuerybuilder(query, scheme);
-    leancloudQuery.find()
-                  .then(data => cb(undefined, formatBackData(data, scheme, query)),
-                        error => backError(error, cb));
+    datastores[datastoreName].db.find(datastoreName, query, cb);
   }
 
   /**
@@ -130,13 +88,7 @@ export namespace sailsLeancloud {
    * @param  {Function}     cb            Callback
    */
   export function update(datastoreName: string, query: WaterlineQuery, cb: WaterlineCallback) {
-    const scheme              = getSchema(datastoreName, query);
-    const leancloudQuery: any = leancloudQuerybuilder(query, scheme);
-    leancloudQuery.find()
-                  .then(data => _.map(data, (d: any) => d.set(formatCreateData(query.valuesToSet))))
-                  .then(data => AV.Object.saveAll(data))
-                  .then(data => backData(query, data, scheme, cb),
-                        error => backError(error, cb));
+    datastores[datastoreName].db.update(datastoreName, query, cb);
   }
 
   /**
@@ -146,12 +98,7 @@ export namespace sailsLeancloud {
    * @param  {Function}     cb            Callback
    */
   export function destroy(datastoreName: string, query: WaterlineQuery, cb: WaterlineCallback) {
-    const scheme              = getSchema(datastoreName, query);
-    const leancloudQuery: any = leancloudQuerybuilder(query, scheme);
-    leancloudQuery.find()
-                  .then(data => data.length > 0 ? AV.Object.destroyAll(data) : [])
-                  .then(data => backData(query, data, scheme, cb),
-                        error => backError(error, cb));
+    datastores[datastoreName].db.destroy(datastoreName, query, cb);
   }
 
   /**
@@ -161,11 +108,7 @@ export namespace sailsLeancloud {
    * @param  {Function}     cb            Callback
    */
   export function count(datastoreName: string, query: WaterlineQuery, cb: WaterlineCallback) {
-    const scheme              = getSchema(datastoreName, query);
-    const leancloudQuery: any = leancloudQuerybuilder(query, scheme);
-    leancloudQuery.count()
-                  .then(data => cb(undefined, data),
-                        error => backError(error, cb));
+    datastores[datastoreName].db.count(datastoreName, query, cb);
   }
 
   /**
@@ -175,12 +118,7 @@ export namespace sailsLeancloud {
    * @param  {Function}     cb            Callback
    */
   export function avg(datastoreName: string, query: WaterlineQuery, cb: WaterlineCallback) {
-    this.find(datastoreName, query, (err, records) => {
-      if (err) { return cb(err); }
-      const sum = _.reduce(records, function (memo, row) { return memo + row[query.numericAttrName]; }, 0);
-      const avg = sum / records.length;
-      return cb(undefined, avg);
-    });
+    datastores[datastoreName].db.avg(datastoreName, query, cb);
   }
 
   /**
@@ -190,11 +128,7 @@ export namespace sailsLeancloud {
    * @param  {Function}     cb            Callback
    */
   export function sum(datastoreName: string, query: WaterlineQuery, cb: WaterlineCallback) {
-    this.find(datastoreName, query, (err, records) => {
-      if (err) { return cb(err); }
-      const sum = _.reduce(records, function (memo, row) { return memo + row[query.numericAttrName]; }, 0);
-      return cb(undefined, sum);
-    });
+    datastores[datastoreName].db.sum(datastoreName, query, cb);
   }
 
   /**

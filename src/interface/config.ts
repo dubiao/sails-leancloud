@@ -5,7 +5,7 @@ export interface IWaterlineConfig {
   identity: string;
 
 }
-export interface IConifg extends IWaterlineConfig {
+export interface IConfig extends IWaterlineConfig {
   appId: string;
   appKey: string;
   masterKey: string;
