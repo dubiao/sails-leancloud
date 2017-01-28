@@ -117,10 +117,7 @@ export namespace sailsLeancloud {
     const scheme              = getSchema(datastoreName, query);
     const leancloudQuery: any = leancloudQuerybuilder(query, scheme);
     leancloudQuery.find()
-                  .then(data => {
-                          console.log('\n callback\n', formatBackData(data, scheme, query));
-                          cb(undefined, formatBackData(data, scheme, query));
-                        },
+                  .then(data => cb(undefined, formatBackData(data, scheme, query)),
                         error => backError(error, cb));
   }
 

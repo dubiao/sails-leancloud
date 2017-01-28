@@ -1,10 +1,8 @@
 import * as _ from 'lodash';
 import { inspect } from 'util';
-import { consoleFunctionArguments } from './help';
 import { sailsLeancloud } from '../adapter';
 
 const TestRunner = require('waterline-adapter-tests');
-consoleFunctionArguments(sailsLeancloud);
 
 let _package: any;
 let interfaces: any;
@@ -21,7 +19,6 @@ const key1 = {
 let key2: any;
 try {
   key2 = require('./leancloudKey').default;
-  console.log('key2', key2);
 } catch (e) {
   key2 = {}
 }
