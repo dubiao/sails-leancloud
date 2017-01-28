@@ -71,9 +71,11 @@ export namespace sailsLeancloud {
       masterKey: process.env.LEANCLOUD_APP_MASTER_KEY
     });
 
+    console.log('identity', identity);
+
     datastores[identity] = {
       config: datastoreConfig,
-      db    : new LeancloudDB(datastoreConfig)
+      db    : new LeancloudDB(datastoreConfig, models)
     };
 
     modelDefinitions[identity] = models;
@@ -88,10 +90,10 @@ export namespace sailsLeancloud {
    * @param  {Function}     cb            Callback
    */
   export function create(datastoreName: string, query: WaterlineQuery, cb: WaterlineCallback) {
-    const scheme = getSchema(datastoreName, query);
-    const object = new AV.Object(query.using, formatCreateData(query.newRecord, scheme));
-    object.save().then(data => backData(query, data, scheme, cb),
-                       error => backError(error, cb));
+
+    console.log('d', datastoreName);
+    console.log(datastores[datastoreName].db.create);
+    datastores[datastoreName].db.create(datastoreName, query, cb);
   }
 
   /**
