@@ -1,10 +1,8 @@
 import * as _ from 'lodash';
 import { inspect } from 'util';
-import { WaterlineLeancloud } from '../adapter';
-import { consoleFunctionArguments } from './help';
-const TestRunner   = require('waterline-adapter-tests');
-const Adapter: any = new WaterlineLeancloud();
-consoleFunctionArguments(Adapter);
+import { sailsLeancloud } from '../adapter';
+
+const TestRunner = require('waterline-adapter-tests');
 
 let _package: any;
 let interfaces: any;
@@ -20,7 +18,7 @@ const key1 = {
 // 本地 key 方便测试
 let key2: any;
 try {
-  key2 = require('./leancloudKey');
+  key2 = require('./leancloudKey').default;
 } catch (e) {
   key2 = {}
 }
@@ -42,21 +40,20 @@ try {
 console.log('Testing `' + _package.name + '`, a Sails/Waterline adapter.');
 console.log('Running `waterline-adapter-tests` against ' + interfaces.length + ' interfaces...');
 console.log('( ' + interfaces.join(', ') + ' )');
-console.log();
 console.log('Latest draft of Waterline adapter interface spec:');
-console.log('http://sailsjs.com/documentation/concepts/extending-sails/adapters');
-console.log();
+console.log('http://links.sailsjs.org/docs/plugins/adapters/interfaces');
 
 new TestRunner({
 
   // Mocha opts
   mocha: {
-    bail   : true,
-    timeout: process.env.TIMEOUT || 30000
+    bail    : true,
+    reporter: 'spec',
+    timeout : process.env.TIMEOUT || 30000
   },
 
   // Load the adapter module.
-  adapter: Adapter,
+  adapter: sailsLeancloud,
 
   // Default connection config to use.
   config: _.assign(config, key1, key2),
@@ -68,6 +65,11 @@ new TestRunner({
   // The set of adapter features to test against.
   // (grabbed these from this adapter's package.json file above)
   features: features,
+
+  mochaChainableMethods: {},
+
+  // Return code != 0 if any test failed
+  failOnError: true
 
   // Most databases implement 'semantic' and 'queryable'.
   //

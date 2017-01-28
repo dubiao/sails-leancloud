@@ -1,64 +1,22 @@
 import * as _ from 'lodash';
-import * as AV from 'leanengine';
-import { formatCreateData, formatBackData } from './util/formatData';
-import { leancloudQuerybuilder } from './query-builder/index';
+import { WaterlineCallback } from './interface/waterline-callback';
+import { IConfig } from './interface/config';
+import { WaterlineModes } from './interface/waterline-models';
+import { LeancloudDB } from './connection/leancloud-db';
+import { WaterlineQuery } from './interface/waterline-query';
+import { Datastores } from './interface/datastores';
 
-export interface WQuery {
-  method: string;
-  using: string;
-  newRecord?: any;
-  newRecords?: any[];
-  valuesToSet?: any;
-  meta?: { fetch: boolean };
-  numericAttrName?: string;
-  criteria?: {
-    where?: any;
-    limit?: number;
-    skip?: number;
-    sort?: any[];
-    select?: string[];
-    joins?: any[];
-  };
-}
-export interface WCallback {
-  (error?, data?): void;
-}
-function backData(query, data, scheme, cb) {
-  if (query.meta && query.meta.fetch === true) {
-    return cb(undefined, formatBackData(data, scheme));
-  }
-  return cb();
-}
-function backError(error, cb) {
-  return cb(error);
-}
+export namespace sailsLeancloud {
+  //
+  let modelDefinitions = {};
 
-function backFindError(error, cb) {
-  if (error) {
-    // leancloud 不能通过代码预先创建表，所以当返回101，当做表是空，当程序写数据的时候会自动创建表
-    if (error.code === 101) {
-      return cb(undefined, [])
-    }
-  }
-  return cb(error);
-}
+  //TODO: 等 waterline test 更新
+  export const identity: string          = 'sails-mongo';
+  export const adapterApiVersion: number = 1;
 
-export class WaterlineLeancloud {
-  // Sails app 里用的
-  public identity: string = 'waterline-leancloud';
+  export const defaults = { schema: false };
 
-  // 适配器版本
-  public adapterApiVersion: number = 1;
-
-  // 默认配置
-  public defaults = {
-    appId    : process.env.LEANCLOUD_APP_ID,
-    appKey   : process.env.LEANCLOUD_APP_KEY,
-    masterKey: process.env.LEANCLOUD_APP_MASTER_KEY
-  };
-
-  // 记录所有配置
-  datastores = { models: [] };
+  export let datastores: Datastores = {};
 
   /**
    * 注册一个适配器连接
@@ -69,27 +27,29 @@ export class WaterlineLeancloud {
    * @param  {Dictionary}   models           数据模型.
    * @param  {Function}     cb               Callback.
    */
-  registerDatastore = (datastoreConfig: any, models: any[], cb: WCallback) => {
-    const identity: string = datastoreConfig.identity;
+  export function registerDatastore(datastoreConfig: IConfig, models: WaterlineModes, cb: WaterlineCallback) {
+
+    const identity = datastoreConfig.identity;
     if (!identity) {
       return cb(new Error('Invalid datastore config. A datastore should contain a unique identity property.'));
     }
 
-    if (this.datastores[identity]) {
-      throw new Error('Datastore `' + identity + '` is already registered.');
-    }
+    // 默认设置
+    _.defaults(datastoreConfig, {
+      appId    : process.env.LEANCLOUD_APP_ID,
+      appKey   : process.env.LEANCLOUD_APP_KEY,
+      masterKey: process.env.LEANCLOUD_APP_MASTER_KEY
+    });
 
-    AV.init({
-              appId    : datastoreConfig.appId,
-              appKey   : datastoreConfig.appKey,
-              masterKey: datastoreConfig.masterKey
-            });
-    this.datastores[identity] = {
+    datastores[identity] = {
       config: datastoreConfig,
-      models: models
+      db    : new LeancloudDB(datastoreConfig, models)
     };
-    return cb();
-  };
+
+    modelDefinitions[identity] = models;
+
+    cb();
+  }
 
   /**
    * 插入一条数据
@@ -97,12 +57,9 @@ export class WaterlineLeancloud {
    * @param  {Dictionary}   query         The stage-3 query to perform.
    * @param  {Function}     cb            Callback
    */
-  create = (datastoreName: string, query: WQuery, cb: WCallback) => {
-    const scheme = this.getScheme(datastoreName, query);
-    const object = new AV.Object(query.using, formatCreateData(query.newRecord, scheme));
-    object.save().then(data => backData(query, data, scheme, cb),
-                       error => backError(error, cb));
-  };
+  export function create(datastoreName: string, query: WaterlineQuery, cb: WaterlineCallback) {
+    datastores[datastoreName].db.create(datastoreName, query, cb);
+  }
 
   /**
    * 插入多条数据
@@ -110,12 +67,9 @@ export class WaterlineLeancloud {
    * @param  {Dictionary}   query         The stage-3 query to perform.
    * @param  {Function}     cb            Callback
    */
-  createEach = (datastoreName: string, query: WQuery, cb: WCallback) => {
-    const scheme    = this.getScheme(datastoreName, query);
-    const allObject = _.map(query.newRecords, record => new AV.Object(query.using, formatCreateData(record, scheme)));
-    AV.Object.saveAll(allObject).then(data => backData(query, data, scheme, cb),
-                                      error => backError(error, cb));
-  };
+  export function createEach(datastoreName: string, query: WaterlineQuery, cb: WaterlineCallback) {
+    datastores[datastoreName].db.createEach(datastoreName, query, cb);
+  }
 
   /**
    * 查询
@@ -123,13 +77,9 @@ export class WaterlineLeancloud {
    * @param  {Dictionary}   query         The stage-3 query to perform.
    * @param  {Function}     cb            Callback
    */
-  find = (datastoreName: string, query: WQuery, cb: WCallback) => {
-    const scheme              = this.getScheme(datastoreName, query);
-    const leancloudQuery: any = leancloudQuerybuilder(query, scheme);
-    leancloudQuery.find()
-                  .then(data => cb(undefined, formatBackData(data, scheme)),
-                        error => backFindError(error, cb));
-  };
+  export function find(datastoreName: string, query: WaterlineQuery, cb: WaterlineCallback) {
+    datastores[datastoreName].db.find(datastoreName, query, cb);
+  }
 
   /**
    * 更新一个或是多个记录
@@ -137,15 +87,9 @@ export class WaterlineLeancloud {
    * @param  {Dictionary}   query         The stage-3 query to perform.
    * @param  {Function}     cb            Callback
    */
-  update = (datastoreName: string, query: WQuery, cb: WCallback) => {
-    const scheme              = this.getScheme(datastoreName, query);
-    const leancloudQuery: any = leancloudQuerybuilder(query, scheme);
-    leancloudQuery.find()
-                  .then(data => _.map(data, (d: any) => d.set(query.valuesToSet)))
-                  .then(data => AV.Object.saveAll(data))
-                  .then(data => backData(query, data, scheme, cb),
-                        error => backError(error, cb));
-  };
+  export function update(datastoreName: string, query: WaterlineQuery, cb: WaterlineCallback) {
+    datastores[datastoreName].db.update(datastoreName, query, cb);
+  }
 
   /**
    * 删除一个或是多个记录
@@ -153,14 +97,9 @@ export class WaterlineLeancloud {
    * @param  {Dictionary}   query         The stage-3 query to perform.
    * @param  {Function}     cb            Callback
    */
-  destroy = (datastoreName: string, query: WQuery, cb: WCallback) => {
-    const scheme              = this.getScheme(datastoreName, query);
-    const leancloudQuery: any = leancloudQuerybuilder(query, scheme);
-    leancloudQuery.find()
-                  .then(data => data.length > 0 ? AV.Object.destroyAll(data) : [])
-                  .then(data => backData(query, data, scheme, cb),
-                        error => backError(error, cb));
-  };
+  export function destroy(datastoreName: string, query: WaterlineQuery, cb: WaterlineCallback) {
+    datastores[datastoreName].db.destroy(datastoreName, query, cb);
+  }
 
   /**
    * 返回数量
@@ -168,13 +107,9 @@ export class WaterlineLeancloud {
    * @param  {Dictionary}   query         The stage-3 query to perform.
    * @param  {Function}     cb            Callback
    */
-  count = (datastoreName: string, query: WQuery, cb: WCallback) => {
-    const scheme              = this.getScheme(datastoreName, query);
-    const leancloudQuery: any = leancloudQuerybuilder(query, scheme);
-    leancloudQuery.count()
-                  .then(data => cb(undefined, data),
-                        error => backError(error, cb));
-  };
+  export function count(datastoreName: string, query: WaterlineQuery, cb: WaterlineCallback) {
+    datastores[datastoreName].db.count(datastoreName, query, cb);
+  }
 
   /**
    * Find out the average of the query.
@@ -182,14 +117,9 @@ export class WaterlineLeancloud {
    * @param  {Dictionary}   query         The stage-3 query to perform.
    * @param  {Function}     cb            Callback
    */
-  avg = (datastoreName: string, query: WQuery, cb: WCallback) => {
-    this.find(datastoreName, query, (err, records) => {
-      if (err) { return cb(err); }
-      const sum = _.reduce(records, function (memo, row) { return memo + row[query.numericAttrName]; }, 0);
-      const avg = sum / records.length;
-      return cb(undefined, avg);
-    });
-  };
+  export function avg(datastoreName: string, query: WaterlineQuery, cb: WaterlineCallback) {
+    datastores[datastoreName].db.avg(datastoreName, query, cb);
+  }
 
   /**
    * Find out the sum of the query.
@@ -197,13 +127,9 @@ export class WaterlineLeancloud {
    * @param  {Dictionary}   query         The stage-3 query to perform.
    * @param  {Function}     cb            Callback
    */
-  sum = (datastoreName: string, query: WQuery, cb: WCallback) => {
-    this.find(datastoreName, query, (err, records) => {
-      if (err) { return cb(err); }
-      const sum = _.reduce(records, function (memo, row) { return memo + row[query.numericAttrName]; }, 0);
-      return cb(undefined, sum);
-    });
-  };
+  export function sum(datastoreName: string, query: WaterlineQuery, cb: WaterlineCallback) {
+    datastores[datastoreName].db.sum(datastoreName, query, cb);
+  }
 
   /**
    * 新建一个表
@@ -215,11 +141,9 @@ export class WaterlineLeancloud {
    * @param  {Dictionary}   definition    The table definition.
    * @param  {Function}     cb            Callback
    */
-
-  define = (datastoreName: string, tableName, definition, cb: WCallback) => {
-    console.log(datastoreName, tableName, definition);
+  export function define(datastoreName: string, tableName: string, definition: any, cb: WaterlineCallback) {
     return cb();
-  };
+  }
 
   /**
    * 删除一个表
@@ -229,8 +153,8 @@ export class WaterlineLeancloud {
    * @param  {undefined}    relations     Currently unused
    * @param  {Function}     cb            Callback
    */
-  drop = (datastoreName: string, tableName, relations, cb: WCallback) => {
-    const destroyAllQuery: WQuery = {
+  export function drop(datastoreName: string, tableName: string, relations: any, cb: WaterlineCallback) {
+    const destroyAllQuery = {
       method  : 'drop',
       using   : tableName,
       meta    : { fetch: false },
@@ -240,26 +164,18 @@ export class WaterlineLeancloud {
         skip : 0
       }
     };
-    this.destroy(datastoreName, destroyAllQuery, (err, records) => {
+    destroy(datastoreName, destroyAllQuery, (err, records) => {
       return cb();
     });
-  };
+  }
 
-  teardow = (identity, cb) => {
-    return cb();
-  };
-
-  setSequence = (datastoreName, sequenceName, sequenceValue, cb) => {
-    const datastore                   = this.datastores[datastoreName];
-    datastore.sequences[sequenceName] = sequenceValue;
-    return cb();
-  };
-
-  private getScheme(datastoreName: string, query: WQuery): any {
-    try {
-      return this.datastores[datastoreName]['models'][query.using];
-    } catch (e) {
-      return {};
+  export function teardown(identity: string, cb: WaterlineCallback) {
+    const datastore = datastores[identity];
+    if (!datastore) {
+      return new Error('Invalid data store identity. No data store exist with that identity.');
     }
+    delete datastores[identity];
+    delete modelDefinitions[identity];
+    return cb();
   }
 }
