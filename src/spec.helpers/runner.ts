@@ -43,17 +43,16 @@ try {
 console.log('Testing `' + _package.name + '`, a Sails/Waterline adapter.');
 console.log('Running `waterline-adapter-tests` against ' + interfaces.length + ' interfaces...');
 console.log('( ' + interfaces.join(', ') + ' )');
-console.log();
 console.log('Latest draft of Waterline adapter interface spec:');
-console.log('http://sailsjs.com/documentation/concepts/extending-sails/adapters');
-console.log();
+console.log('http://links.sailsjs.org/docs/plugins/adapters/interfaces');
 
 new TestRunner({
 
   // Mocha opts
   mocha: {
-    bail   : true,
-    timeout: process.env.TIMEOUT || 30000
+    bail    : true,
+    reporter: 'spec',
+    timeout : process.env.TIMEOUT || 30000
   },
 
   // Load the adapter module.
@@ -69,6 +68,11 @@ new TestRunner({
   // The set of adapter features to test against.
   // (grabbed these from this adapter's package.json file above)
   features: features,
+
+  mochaChainableMethods: {},
+
+  // Return code != 0 if any test failed
+  failOnError: true
 
   // Most databases implement 'semantic' and 'queryable'.
   //

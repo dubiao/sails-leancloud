@@ -33,7 +33,7 @@ export namespace sailsLeancloud {
   let modelDefinitions = {};
 
   //
-  export const identity: string          = 'sails-leancloud';
+  export const identity: string          = 'sails-mongo';
   export const adapterApiVersion: number = 1;
 
   export const defaults = { schema: false };

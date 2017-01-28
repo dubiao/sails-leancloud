@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { jsesc } from 'jsesc';
+const jsesc = require('jsesc');
 
 export function jsescAll(value) {
   return jsesc(value, {

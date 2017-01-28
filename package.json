@@ -51,11 +51,11 @@
   "license": "MIT",
   "dependencies": {
     "@reactivex/rxjs": "^5.0.3",
-    "rxjs": "^5.0.3",
-    "tslib": "^1.4.0",
     "jsesc": "^2.4.0",
     "leanengine": "^1.2.3",
-    "lodash": "^4.17.2"
+    "lodash": "^4.17.2",
+    "rxjs": "^5.0.3",
+    "tslib": "^1.4.0"
   },
   "devDependencies": {
     "@angular/compiler": "^2.4.1",
@@ -116,9 +116,9 @@
     "ts-node": "^1.7.2",
     "tslint": "4.0.0",
     "typescript": "^2.1.4",
+    "waterline-adapter-tests": "^1.0.0-5",
     "yargs": "^6.6.0",
-    "zone.js": "^0.7.4",
-    "waterline-adapter-tests": "^1.0.0-3"
+    "zone.js": "^0.7.4"
   },
   "optionalDependencies": {},
   "config": {
@@ -130,10 +130,13 @@
     "waterlineVersion": "^0.13.0",
     "interfaces": [
       "semantic",
-      "queryable"
+      "queryable",
+      "associations",
+      "migratable"
     ],
     "features": [
-      "cross-adapter"
+      "cross-adapter",
+      "unique"
     ]
   }
 }

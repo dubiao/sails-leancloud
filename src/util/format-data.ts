@@ -15,6 +15,7 @@ function rewriteCreatedAtUpdatedAt(data: any) {
 }
 
 function formatInput(data) {
+  delete data._id;
   delete data.objectId;
   delete data.id;
   delete data.createdAt;
