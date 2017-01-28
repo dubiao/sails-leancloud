@@ -10,7 +10,7 @@ import { leancloudQuerybuilder } from './query-builder/index';
 
 function backData(query, data, scheme, cb) {
   if (query.meta && query.meta.fetch === true) {
-    return cb(undefined, formatBackData(data, scheme));
+    return cb(undefined, formatBackData(data, scheme, query));
   }
   return cb();
 }
@@ -117,7 +117,10 @@ export namespace sailsLeancloud {
     const scheme              = getSchema(datastoreName, query);
     const leancloudQuery: any = leancloudQuerybuilder(query, scheme);
     leancloudQuery.find()
-                  .then(data => cb(undefined, formatBackData(data, scheme)),
+                  .then(data => {
+                          console.log('\n callback\n', formatBackData(data, scheme, query));
+                          cb(undefined, formatBackData(data, scheme, query));
+                        },
                         error => backFindError(error, cb));
   }
 
@@ -233,7 +236,7 @@ export namespace sailsLeancloud {
     });
   }
 
-  export function teardow(identity: string, cb: WaterlineCallback) {
+  export function teardown(identity: string, cb: WaterlineCallback) {
     return cb();
   }
 

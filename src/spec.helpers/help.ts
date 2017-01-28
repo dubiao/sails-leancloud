@@ -14,7 +14,6 @@ export function consoleFunctionArguments(fun: any) {
       const name = getFunctionParamNames(val);
       fun[key]   = function (_null, query) {
         const param = _.zipObject(name, arguments);
-        val.apply(fun, arguments);
         console.log(`\n\n\n`);
         _.forEach(param, (v, k) => {
           if (k !== 'cb') {
@@ -24,6 +23,7 @@ export function consoleFunctionArguments(fun: any) {
           }
         });
         console.log('\n\n\n');
+        val.apply(fun, arguments);
       };
     }
   });
