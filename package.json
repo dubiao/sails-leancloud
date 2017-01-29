@@ -2,7 +2,7 @@
   "name": "sails-leancloud",
   "version": "0.0.2",
   "description": "leancloud adapter for sails waterline.",
-  "main": "index.ts",
+  "main": "dist/umd/index.js",
   "typings": "types/index.d.ts",
   "scripts": {
     "build": "gulp build",
