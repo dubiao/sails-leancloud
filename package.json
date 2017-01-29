@@ -50,16 +50,15 @@
   "author": "Jimmy Liu <hero63418@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@reactivex/rxjs": "^5.0.3",
     "leanengine": "^1.2.3",
     "lodash": "^4.17.2",
     "rxjs": "^5.0.3",
-    "tslib": "^1.4.0",
-    "jsesc": "^2.4.0"
+    "tslib": "^1.4.0"
   },
   "devDependencies": {
     "@angular/compiler": "^2.4.1",
     "@angular/core": "^2.4.1",
+    "@reactivex/rxjs": "^5.0.3",
     "@types/async": "^2.0.37",
     "@types/browser-sync": "^0.0.34",
     "@types/chalk": "^0.4.31",
