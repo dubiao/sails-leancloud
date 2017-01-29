@@ -10,9 +10,9 @@ let features: any;
 
 // 进程中的 key 方便 ci
 const key1 = {
-  appId    : process.env.LEANCLOUD_APP_ID,
-  appKey   : process.env.LEANCLOUD_APP_KEY,
-  masterKey: process.env.LEANCLOUD_APP_MASTER_KEY
+  appId    : process.env.LC_APP_ID,
+  appKey   : process.env.LC_APP_KEY,
+  masterKey: process.env.LC_APP_MASTER_KEY
 };
 
 // 本地 key 方便测试

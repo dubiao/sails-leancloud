@@ -1,3 +1,12 @@
+![image_squidhome@2x.png](http://i.imgur.com/RIvu9.png)
+
+[![NPM version](https://badge.fury.io/js/sails-leancloud.svg)](http://badge.fury.io/js/sails-leancloud)
+[![Build Status](https://travis-ci.org/Jimmysh/sails-leancloud.svg?branch=master)](https://travis-ci.org/Jimmysh/sails-leancloud)
+[![Dependency Status](https://gemnasium.com/badges/github.com/Jimmysh/sails-leancloud.svg)](https://gemnasium.com/github.com/Jimmysh/sails-leancloud)
+[![Test Coverage](https://codeclimate.com/github/Jimmysh/sails-leancloud/badges/coverage.svg)](https://codeclimate.com/github/Jimmysh/sails-leancloud/coverage)
+[![Downloads](http://img.shields.io/npm/dm/sails-leancloud.svg)](https://npmjs.org/package/sails-leancloud)
+[![Issue Count](https://codeclimate.com/github/Jimmysh/sails-leancloud/badges/issue_count.svg)](https://codeclimate.com/github/Jimmysh/sails-leancloud)
+
 # sails-leancloud
 
 This project is generated from the [node-typescript-seed](https://github.com/UIUXEngineering/node-typescript-seed).

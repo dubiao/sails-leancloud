@@ -8,8 +8,8 @@ node_js:
 sudo: false
 
 addons:
-  firefox: "39.0"
-
+   code_climate:
+          repo_token: 4488c28907a9e89b8b699d9b2f54915529b0aad7ada8d9b381517143c70b8777
 os:
   - linux
   - osx
