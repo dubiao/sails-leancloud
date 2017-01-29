@@ -1,6 +1,6 @@
 {
   "name": "sails-leancloud",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "leancloud adapter for sails waterline.",
   "main": "index.ts",
   "typings": "types/index.d.ts",
